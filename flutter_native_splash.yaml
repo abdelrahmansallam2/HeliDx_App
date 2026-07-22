@@ -1,0 +1,11 @@
+flutter_native_splash:
+  color: "#032E36"
+  image: "assets/images/helidx_logo.jpeg"
+  android: true
+  ios: true
+  web: false
+
+  android_12:
+    color: "#032E36"
+    image: "assets/images/helidx_logo.jpeg"
+    icon_background_color: "#032E36"

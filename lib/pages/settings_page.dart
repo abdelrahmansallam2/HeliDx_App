@@ -402,9 +402,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return BoxDecoration(
       color: AppColors.settingsCard.withValues(alpha: 0.92),
       borderRadius: BorderRadius.circular(18),
-      border: Border.all(
-        color: AppColors.accentGreen.withValues(alpha: 0.18),
-      ),
+      border: Border.all(color: AppColors.accentGreen.withValues(alpha: 0.18)),
     );
   }
 
@@ -505,16 +503,8 @@ class _Background extends StatelessWidget {
         ),
         child: const Stack(
           children: [
-            Positioned(
-              top: -90,
-              right: -60,
-              child: _Glow(size: 240),
-            ),
-            Positioned(
-              bottom: -120,
-              left: -80,
-              child: _Glow(size: 270),
-            ),
+            Positioned(top: -90, right: -60, child: _Glow(size: 240)),
+            Positioned(bottom: -120, left: -80, child: _Glow(size: 270)),
           ],
         ),
       ),

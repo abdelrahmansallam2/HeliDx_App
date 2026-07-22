@@ -1,11 +1,20 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../core/app_colors.dart';
 import '../l10n/app_localizations.dart';
 import '../models/analysis_result.dart';
+
+enum CameraViewMode {
+  empty,
+  livePreview,
+  captured,
+  analyzing,
+  initializing,
+  error,
+}
 
 class BrandHeader extends StatelessWidget {
   const BrandHeader({super.key});
@@ -68,11 +77,17 @@ class SamplePreview extends StatelessWidget {
   const SamplePreview({
     required this.selectedImage,
     required this.isAnalyzing,
+    required this.viewMode,
+    required this.cameraController,
+    required this.errorMessage,
     super.key,
   });
 
   final XFile? selectedImage;
   final bool isAnalyzing;
+  final CameraViewMode viewMode;
+  final CameraController? cameraController;
+  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +99,9 @@ class SamplePreview extends StatelessWidget {
         color: AppColors.scaffold,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: selectedImage == null
+          color: viewMode == CameraViewMode.livePreview
+              ? AppColors.accentTeal
+              : selectedImage == null
               ? AppColors.previewBorderIdle
               : AppColors.previewBorderActive,
           width: 1.3,
@@ -94,22 +111,61 @@ class SamplePreview extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (selectedImage != null)
-            Image.file(
-              File(selectedImage!.path),
+          if (viewMode == CameraViewMode.livePreview &&
+              cameraController != null &&
+              cameraController!.value.isInitialized)
+            FittedBox(
               fit: BoxFit.cover,
+              child: SizedBox(
+                width: cameraController!.value.previewSize!.height,
+                height: cameraController!.value.previewSize!.width,
+                child: CameraPreview(cameraController!),
+              ),
             )
+          else if (viewMode == CameraViewMode.captured && selectedImage != null)
+            Image.file(File(selectedImage!.path), fit: BoxFit.cover)
+          else if (viewMode == CameraViewMode.error)
+            _CameraError(message: errorMessage ?? l10n.cameraUnavailable)
+          else if (viewMode == CameraViewMode.initializing)
+            const _CameraLoading()
           else
             const _EmptyPreview(),
 
           IgnorePointer(
             child: Padding(
               padding: const EdgeInsets.all(18),
-              child: CustomPaint(
-                painter: _CornerFramePainter(),
-              ),
+              child: CustomPaint(painter: _CornerFramePainter()),
             ),
           ),
+
+          if (viewMode == CameraViewMode.livePreview &&
+              cameraController != null &&
+              cameraController!.value.isInitialized)
+            Positioned(
+              bottom: 14,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    l10n.holdSteady,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
           if (isAnalyzing)
             Container(
@@ -118,9 +174,7 @@ class SamplePreview extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircularProgressIndicator(
-                    color: AppColors.accentLight,
-                  ),
+                  const CircularProgressIndicator(color: AppColors.accentLight),
                   const SizedBox(height: 14),
                   Text(
                     l10n.comparingSamples,
@@ -132,6 +186,67 @@ class SamplePreview extends StatelessWidget {
                 ],
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CameraError extends StatelessWidget {
+  const _CameraError({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.videocam_off_rounded,
+              color: AppColors.resultPositive,
+              size: 48,
+            ),
+            const SizedBox(height: 14),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: AppColors.textWhite,
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CameraLoading extends StatelessWidget {
+  const _CameraLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: AppColors.accentLight),
+          const SizedBox(height: 14),
+          Text(
+            l10n.initializingCamera,
+            style: const TextStyle(
+              color: AppColors.textWhite,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
@@ -201,16 +316,8 @@ class SecondaryButton extends StatelessWidget {
       height: 50,
       child: OutlinedButton.icon(
         onPressed: onPressed,
-        icon: Icon(
-          icon,
-          size: 20,
-        ),
-        label: Text(
-          label,
-          style: const TextStyle(
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        icon: Icon(icon, size: 20),
+        label: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.buttonSecondaryFg,
           side: BorderSide(
@@ -226,10 +333,7 @@ class SecondaryButton extends StatelessWidget {
 }
 
 class ResultCard extends StatelessWidget {
-  const ResultCard({
-    required this.result,
-    super.key,
-  });
+  const ResultCard({required this.result, super.key});
 
   final AnalysisResult result;
 
@@ -248,9 +352,7 @@ class ResultCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.11),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: accent.withValues(alpha: 0.55),
-        ),
+        border: Border.all(color: accent.withValues(alpha: 0.55)),
       ),
       child: Row(
         children: [
@@ -326,16 +428,8 @@ class BackgroundDecoration extends StatelessWidget {
         ),
         child: const Stack(
           children: [
-            Positioned(
-              top: -90,
-              right: -60,
-              child: _GlowCircle(size: 240),
-            ),
-            Positioned(
-              bottom: -120,
-              left: -80,
-              child: _GlowCircle(size: 270),
-            ),
+            Positioned(top: -90, right: -60, child: _GlowCircle(size: 240)),
+            Positioned(bottom: -120, left: -80, child: _GlowCircle(size: 270)),
           ],
         ),
       ),
@@ -344,9 +438,7 @@ class BackgroundDecoration extends StatelessWidget {
 }
 
 class _GlowCircle extends StatelessWidget {
-  const _GlowCircle({
-    required this.size,
-  });
+  const _GlowCircle({required this.size});
 
   final double size;
 
@@ -393,53 +485,25 @@ class _CornerFramePainter extends CustomPainter {
     // Top-right corner
     path.moveTo(size.width - cornerLength, 0);
     path.lineTo(size.width - radius, 0);
-    path.quadraticBezierTo(
-      size.width,
-      0,
-      size.width,
-      radius,
-    );
+    path.quadraticBezierTo(size.width, 0, size.width, radius);
     path.lineTo(size.width, cornerLength);
 
     // Bottom-right corner
-    path.moveTo(
-      size.width,
-      size.height - cornerLength,
-    );
-    path.lineTo(
-      size.width,
-      size.height - radius,
-    );
+    path.moveTo(size.width, size.height - cornerLength);
+    path.lineTo(size.width, size.height - radius);
     path.quadraticBezierTo(
       size.width,
       size.height,
       size.width - radius,
       size.height,
     );
-    path.lineTo(
-      size.width - cornerLength,
-      size.height,
-    );
+    path.lineTo(size.width - cornerLength, size.height);
 
     // Bottom-left corner
-    path.moveTo(
-      cornerLength,
-      size.height,
-    );
-    path.lineTo(
-      radius,
-      size.height,
-    );
-    path.quadraticBezierTo(
-      0,
-      size.height,
-      0,
-      size.height - radius,
-    );
-    path.lineTo(
-      0,
-      size.height - cornerLength,
-    );
+    path.moveTo(cornerLength, size.height);
+    path.lineTo(radius, size.height);
+    path.quadraticBezierTo(0, size.height, 0, size.height - radius);
+    path.lineTo(0, size.height - cornerLength);
 
     canvas.drawPath(path, paint);
   }

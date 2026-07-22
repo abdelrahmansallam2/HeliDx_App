@@ -136,4 +136,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get negative => 'سلبي';
+
+  @override
+  String get capture => 'التقاط';
+
+  @override
+  String get retake => 'إعادة';
+
+  @override
+  String get cameraPermissionDenied =>
+      'تم رفض إذن الكاميرا. يرجى تمكينه من الإعدادات.';
+
+  @override
+  String get cameraUnavailable => 'الكاميرا غير متاحة.';
+
+  @override
+  String get initializingCamera => 'جارٍ تهيئة الكاميرا...';
+
+  @override
+  String get holdSteady => 'أبقِ الهاتف ثابتًا';
 }

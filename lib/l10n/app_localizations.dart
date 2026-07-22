@@ -343,6 +343,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NEGATIVE'**
   String get negative;
+
+  /// No description provided for @capture.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture'**
+  String get capture;
+
+  /// No description provided for @retake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get retake;
+
+  /// No description provided for @cameraPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera permission denied. Please enable it in settings.'**
+  String get cameraPermissionDenied;
+
+  /// No description provided for @cameraUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera unavailable.'**
+  String get cameraUnavailable;
+
+  /// No description provided for @initializingCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing camera...'**
+  String get initializingCamera;
+
+  /// No description provided for @holdSteady.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold the phone steady'**
+  String get holdSteady;
 }
 
 class _AppLocalizationsDelegate

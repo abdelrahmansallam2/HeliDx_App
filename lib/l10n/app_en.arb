@@ -45,5 +45,12 @@
   "clearBackgroundHint": "Use a clear background and steady lighting for the best match.",
   "comparisonResult": "Comparison result",
   "positive": "POSITIVE",
-  "negative": "NEGATIVE"
+  "negative": "NEGATIVE",
+
+  "capture": "Capture",
+  "retake": "Retake",
+  "cameraPermissionDenied": "Camera permission denied. Please enable it in settings.",
+  "cameraUnavailable": "Camera unavailable.",
+  "initializingCamera": "Initializing camera...",
+  "holdSteady": "Hold the phone steady"
 }

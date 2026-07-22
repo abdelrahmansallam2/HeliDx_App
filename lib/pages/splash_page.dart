@@ -111,16 +111,8 @@ class _SplashPageState extends State<SplashPage>
             ),
             child: const Stack(
               children: [
-                Positioned(
-                  top: -90,
-                  right: -60,
-                  child: _Glow(size: 240),
-                ),
-                Positioned(
-                  bottom: -120,
-                  left: -80,
-                  child: _Glow(size: 270),
-                ),
+                Positioned(top: -90, right: -60, child: _Glow(size: 240)),
+                Positioned(bottom: -120, left: -80, child: _Glow(size: 270)),
               ],
             ),
           ),
@@ -144,7 +136,9 @@ class _SplashPageState extends State<SplashPage>
                               borderRadius: BorderRadius.circular(32),
                               color: Colors.white.withValues(alpha: 0.08),
                               border: Border.all(
-                                color: AppColors.accentTeal.withValues(alpha: 0.35),
+                                color: AppColors.accentTeal.withValues(
+                                  alpha: 0.35,
+                                ),
                               ),
                             ),
                             clipBehavior: Clip.antiAlias,

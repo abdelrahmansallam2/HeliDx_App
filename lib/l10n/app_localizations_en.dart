@@ -136,4 +136,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get negative => 'NEGATIVE';
+
+  @override
+  String get capture => 'Capture';
+
+  @override
+  String get retake => 'Retake';
+
+  @override
+  String get cameraPermissionDenied =>
+      'Camera permission denied. Please enable it in settings.';
+
+  @override
+  String get cameraUnavailable => 'Camera unavailable.';
+
+  @override
+  String get initializingCamera => 'Initializing camera...';
+
+  @override
+  String get holdSteady => 'Hold the phone steady';
 }

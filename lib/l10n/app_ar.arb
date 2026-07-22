@@ -45,5 +45,12 @@
   "clearBackgroundHint": "استخدم خلفية واضحة وإضاءة مستقرة للحصول على أفضل نتيجة.",
   "comparisonResult": "نتيجة المقارنة",
   "positive": "إيجابي",
-  "negative": "سلبي"
+  "negative": "سلبي",
+
+  "capture": "التقاط",
+  "retake": "إعادة",
+  "cameraPermissionDenied": "تم رفض إذن الكاميرا. يرجى تمكينه من الإعدادات.",
+  "cameraUnavailable": "الكاميرا غير متاحة.",
+  "initializingCamera": "جارٍ تهيئة الكاميرا...",
+  "holdSteady": "أبقِ الهاتف ثابتًا"
 }
