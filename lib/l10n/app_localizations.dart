@@ -344,6 +344,48 @@ abstract class AppLocalizations {
   /// **'NEGATIVE'**
   String get negative;
 
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'UNKNOWN'**
+  String get unknown;
+
+  /// No description provided for @inconclusiveResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Inconclusive Result'**
+  String get inconclusiveResult;
+
+  /// No description provided for @resultCouldNotBeDetermined.
+  ///
+  /// In en, this message translates to:
+  /// **'The result could not be determined. Please retake the image with clear lighting and keep the sample inside the frame.'**
+  String get resultCouldNotBeDetermined;
+
+  /// No description provided for @retaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Retaking...'**
+  String get retaking;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// No description provided for @keepSampleInFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the sample inside the frame'**
+  String get keepSampleInFrame;
+
+  /// No description provided for @useClearLighting.
+  ///
+  /// In en, this message translates to:
+  /// **'Use clear lighting'**
+  String get useClearLighting;
+
   /// No description provided for @capture.
   ///
   /// In en, this message translates to:

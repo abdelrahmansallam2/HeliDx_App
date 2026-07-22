@@ -138,6 +138,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String get negative => 'سلبي';
 
   @override
+  String get unknown => 'غير محدد';
+
+  @override
+  String get inconclusiveResult => 'النتيجة غير محددة';
+
+  @override
+  String get resultCouldNotBeDetermined =>
+      'تعذر تحديد النتيجة. يرجى إعادة التصوير بإضاءة واضحة ووضع العينة بالكامل داخل الإطار.';
+
+  @override
+  String get retaking => 'جارٍ إعادة التصوير...';
+
+  @override
+  String get tryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get keepSampleInFrame => 'أبقِ العينة داخل الإطار';
+
+  @override
+  String get useClearLighting => 'استخدم إضاءة واضحة';
+
+  @override
   String get capture => 'التقاط';
 
   @override

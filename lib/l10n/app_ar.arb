@@ -47,6 +47,14 @@
   "positive": "إيجابي",
   "negative": "سلبي",
 
+  "unknown": "غير محدد",
+  "inconclusiveResult": "النتيجة غير محددة",
+  "resultCouldNotBeDetermined": "تعذر تحديد النتيجة. يرجى إعادة التصوير بإضاءة واضحة ووضع العينة بالكامل داخل الإطار.",
+  "retaking": "جارٍ إعادة التصوير...",
+  "tryAgain": "حاول مرة أخرى",
+  "keepSampleInFrame": "أبقِ العينة داخل الإطار",
+  "useClearLighting": "استخدم إضاءة واضحة",
+
   "capture": "التقاط",
   "retake": "إعادة",
   "cameraPermissionDenied": "تم رفض إذن الكاميرا. يرجى تمكينه من الإعدادات.",

@@ -48,6 +48,7 @@ abstract final class AppColors {
   // ── Result Card ──
   static const Color resultPositive = Color(0xFFFFC75F);
   static const Color resultNegative = Color(0xFF65E8C0);
+  static const Color resultUnknown = Color(0xFFFFB74D);
 
   // ── Settings ──
   static const Color settingsCard = Color(0xFF0A4148);

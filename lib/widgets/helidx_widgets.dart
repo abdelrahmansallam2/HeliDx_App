@@ -340,11 +340,37 @@ class ResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final bool isPositive = result == AnalysisResult.positive;
 
-    final Color accent = isPositive
-        ? AppColors.resultPositive
-        : AppColors.resultNegative;
+    final Color accent;
+    final IconData icon;
+
+    switch (result) {
+      case AnalysisResult.positive:
+        accent = AppColors.resultPositive;
+        icon = Icons.warning_amber_rounded;
+        break;
+      case AnalysisResult.negative:
+        accent = AppColors.resultNegative;
+        icon = Icons.check_circle_outline_rounded;
+        break;
+      case AnalysisResult.unknown:
+        accent = AppColors.resultUnknown;
+        icon = Icons.help_outline_rounded;
+        break;
+    }
+
+    final String resultLabel;
+    switch (result) {
+      case AnalysisResult.positive:
+        resultLabel = l10n.positive;
+        break;
+      case AnalysisResult.negative:
+        resultLabel = l10n.negative;
+        break;
+      case AnalysisResult.unknown:
+        resultLabel = l10n.inconclusiveResult;
+        break;
+    }
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -363,13 +389,7 @@ class ResultCard extends StatelessWidget {
               color: accent.withValues(alpha: 0.16),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              isPositive
-                  ? Icons.warning_amber_rounded
-                  : Icons.check_circle_outline_rounded,
-              color: accent,
-              size: 30,
-            ),
+            child: Icon(icon, color: accent, size: 30),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -386,7 +406,7 @@ class ResultCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  isPositive ? l10n.positive : l10n.negative,
+                  resultLabel,
                   style: TextStyle(
                     color: accent,
                     fontSize: 23,
@@ -394,6 +414,17 @@ class ResultCard extends StatelessWidget {
                     letterSpacing: 0.6,
                   ),
                 ),
+                if (result == AnalysisResult.unknown) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.resultCouldNotBeDetermined,
+                    style: const TextStyle(
+                      color: AppColors.textBody,
+                      fontSize: 12,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

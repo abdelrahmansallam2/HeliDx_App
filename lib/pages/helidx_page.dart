@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -126,9 +128,13 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
   }
 
   Future<void> _retakePicture() async {
+    await _cameraService.dispose();
+    if (!mounted) return;
     setState(() {
       _selectedImage = null;
       _result = null;
+      _isAnalyzing = false;
+      _cameraError = null;
       _viewMode = CameraViewMode.empty;
     });
     await _initializeCamera();
@@ -137,6 +143,8 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
   Future<void> _onCameraButtonPressed() async {
     if (_viewMode == CameraViewMode.livePreview) {
       await _capturePicture();
+    } else if (_viewMode == CameraViewMode.initializing) {
+      return;
     } else {
       await _initializeCamera();
     }
@@ -202,9 +210,18 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
 
     if (!mounted) return;
 
+    // Mock analysis — randomly returns positive, negative, or unknown
+    // so all three states can be tested before real comparison is implemented.
+    final results = [
+      AnalysisResult.positive,
+      AnalysisResult.negative,
+      AnalysisResult.unknown,
+    ];
+    final mockResult = results[Random().nextInt(results.length)];
+
     setState(() {
       _isAnalyzing = false;
-      _result = AnalysisResult.positive;
+      _result = mockResult;
     });
   }
 
@@ -224,7 +241,9 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
     final l10n = AppLocalizations.of(context)!;
 
     final bool isLiveCamera = _viewMode == CameraViewMode.livePreview;
-    final bool canInteract = !_isAnalyzing;
+    final bool isCameraBusy =
+        _viewMode == CameraViewMode.initializing || _cameraService.isCapturing;
+    final bool canInteract = !_isAnalyzing && !isCameraBusy;
 
     final String cameraLabel;
     final VoidCallback? cameraCallback;
@@ -307,6 +326,9 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
     String cameraLabel,
     VoidCallback? cameraCallback,
   ) {
+    final bool hasResult = _result != null;
+    final bool hasImage = _selectedImage != null;
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -359,7 +381,7 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
 
           const SizedBox(height: 16),
 
-          if (_viewMode == CameraViewMode.captured && _selectedImage != null)
+          if (_viewMode == CameraViewMode.captured && hasImage && !hasResult)
             Row(
               children: [
                 Expanded(
@@ -378,6 +400,15 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
                   ),
                 ),
               ],
+            )
+          else if (hasResult)
+            SizedBox(
+              height: 50,
+              child: SecondaryButton(
+                icon: Icons.replay_rounded,
+                label: l10n.retake,
+                onPressed: _isAnalyzing ? null : _retakePicture,
+              ),
             )
           else
             Row(
@@ -407,9 +438,10 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
           SizedBox(
             height: 56,
             child: FilledButton.icon(
-              onPressed: _selectedImage == null || _isAnalyzing
-                  ? null
-                  : _analyzeSample,
+              onPressed:
+                  hasImage && !_isAnalyzing && !_cameraService.isCapturing
+                  ? _analyzeSample
+                  : null,
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.accentGreen,
                 foregroundColor: AppColors.buttonFilledFg,
@@ -439,12 +471,12 @@ class _HeliDxPageState extends State<HeliDxPage> with WidgetsBindingObserver {
             ),
           ),
 
-          if (_result != null) ...[
+          if (hasResult) ...[
             const SizedBox(height: 18),
             ResultCard(result: _result!),
           ],
 
-          if (_selectedImage != null) ...[
+          if (hasImage && !hasResult) ...[
             const SizedBox(height: 10),
             TextButton.icon(
               onPressed: _isAnalyzing ? null : _reset,

@@ -47,6 +47,14 @@
   "positive": "POSITIVE",
   "negative": "NEGATIVE",
 
+  "unknown": "UNKNOWN",
+  "inconclusiveResult": "Inconclusive Result",
+  "resultCouldNotBeDetermined": "The result could not be determined. Please retake the image with clear lighting and keep the sample inside the frame.",
+  "retaking": "Retaking...",
+  "tryAgain": "Try Again",
+  "keepSampleInFrame": "Keep the sample inside the frame",
+  "useClearLighting": "Use clear lighting",
+
   "capture": "Capture",
   "retake": "Retake",
   "cameraPermissionDenied": "Camera permission denied. Please enable it in settings.",

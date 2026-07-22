@@ -138,6 +138,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get negative => 'NEGATIVE';
 
   @override
+  String get unknown => 'UNKNOWN';
+
+  @override
+  String get inconclusiveResult => 'Inconclusive Result';
+
+  @override
+  String get resultCouldNotBeDetermined =>
+      'The result could not be determined. Please retake the image with clear lighting and keep the sample inside the frame.';
+
+  @override
+  String get retaking => 'Retaking...';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get keepSampleInFrame => 'Keep the sample inside the frame';
+
+  @override
+  String get useClearLighting => 'Use clear lighting';
+
+  @override
   String get capture => 'Capture';
 
   @override

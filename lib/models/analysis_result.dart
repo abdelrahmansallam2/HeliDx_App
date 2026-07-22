@@ -1,1 +1,1 @@
-enum AnalysisResult { positive, negative }
+enum AnalysisResult { positive, negative, unknown }
