@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../core/app_colors.dart';
+import '../l10n/app_localizations.dart';
 import '../models/analysis_result.dart';
 import '../widgets/helidx_widgets.dart';
+import 'settings_page.dart';
 
 class HeliDxPage extends StatefulWidget {
   const HeliDxPage({super.key});
@@ -40,8 +43,8 @@ class _HeliDxPageState extends State<HeliDxPage> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not open the camera or gallery.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.cameraGalleryError),
         ),
       );
     }
@@ -83,6 +86,8 @@ class _HeliDxPageState extends State<HeliDxPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -93,17 +98,15 @@ class _HeliDxPageState extends State<HeliDxPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const BrandHeader(),
-                  const SizedBox(height: 28),
-                  _buildMainCard(),
+                  _buildTopBar(),
+                  const SizedBox(height: 12),
+                  _buildMainCard(l10n),
                   const SizedBox(height: 16),
-                  const Text(
-                    'HeliDx compares the captured sample with verified '
-                        'reference images. Final medical decisions should be '
-                        'reviewed by a qualified specialist.',
+                  Text(
+                    l10n.disclaimer,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFFB7D1D3),
+                    style: const TextStyle(
+                      color: AppColors.textBody,
                       fontSize: 12,
                       height: 1.45,
                     ),
@@ -117,18 +120,49 @@ class _HeliDxPageState extends State<HeliDxPage> {
     );
   }
 
-  Widget _buildMainCard() {
+  Widget _buildTopBar() {
+    return Row(
+      children: [
+        const Spacer(),
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
+            );
+          },
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: AppColors.accentGreen.withValues(alpha: 0.25),
+              ),
+            ),
+            child: const Icon(
+              Icons.settings_rounded,
+              color: AppColors.accentGreen,
+              size: 22,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMainCard(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A4148).withOpacity(0.92),
+        color: AppColors.cardBackground.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: const Color(0xFF9AF3D7).withOpacity(0.22),
+          color: AppColors.cardBorder.withValues(alpha: 0.22),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.22),
+            color: Colors.black.withValues(alpha: 0.22),
             blurRadius: 28,
             offset: const Offset(0, 14),
           ),
@@ -137,19 +171,19 @@ class _HeliDxPageState extends State<HeliDxPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Check a sample',
-            style: TextStyle(
-              color: Colors.white,
+          Text(
+            l10n.checkSample,
+            style: const TextStyle(
+              color: AppColors.textWhite,
               fontSize: 24,
               fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'Capture a clear photo inside the frame, then start the comparison.',
-            style: TextStyle(
-              color: Color(0xFFC5DCDD),
+          Text(
+            l10n.capturePhotoHint,
+            style: const TextStyle(
+              color: AppColors.textSubtitle,
               fontSize: 14,
               height: 1.4,
             ),
@@ -168,7 +202,7 @@ class _HeliDxPageState extends State<HeliDxPage> {
               Expanded(
                 child: SecondaryButton(
                   icon: Icons.photo_camera_rounded,
-                  label: 'Camera',
+                  label: l10n.camera,
                   onPressed: _isAnalyzing
                       ? null
                       : () => _pickImage(ImageSource.camera),
@@ -178,7 +212,7 @@ class _HeliDxPageState extends State<HeliDxPage> {
               Expanded(
                 child: SecondaryButton(
                   icon: Icons.photo_library_rounded,
-                  label: 'Gallery',
+                  label: l10n.gallery,
                   onPressed: _isAnalyzing
                       ? null
                       : () => _pickImage(ImageSource.gallery),
@@ -196,28 +230,28 @@ class _HeliDxPageState extends State<HeliDxPage> {
                   ? null
                   : _analyzeSample,
               style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF59E4B8),
-                foregroundColor: const Color(0xFF07383E),
-                disabledBackgroundColor: const Color(0xFF315A5D),
-                disabledForegroundColor: const Color(0xFF83A1A3),
+                backgroundColor: AppColors.accentGreen,
+                foregroundColor: AppColors.buttonFilledFg,
+                disabledBackgroundColor: AppColors.buttonDisabledBg,
+                disabledForegroundColor: AppColors.buttonDisabledFg,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
               ),
               icon: _isAnalyzing
                   ? const SizedBox(
-                width: 21,
-                height: 21,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: Color(0xFF07383E),
-                ),
-              )
+                      width: 21,
+                      height: 21,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: AppColors.buttonFilledFg,
+                      ),
+                    )
                   : const Icon(Icons.biotech_rounded),
               label: Text(
                 _isAnalyzing
-                    ? 'Analyzing sample...'
-                    : 'Analyze sample',
+                    ? l10n.analyzingSample
+                    : l10n.analyzeSample,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
@@ -236,9 +270,9 @@ class _HeliDxPageState extends State<HeliDxPage> {
             TextButton.icon(
               onPressed: _isAnalyzing ? null : _reset,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Scan another sample'),
+              label: Text(l10n.scanAnotherSample),
               style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFFC9E8E5),
+                foregroundColor: AppColors.textButtonFg,
               ),
             ),
           ],

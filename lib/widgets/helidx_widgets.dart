@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../core/app_colors.dart';
+import '../l10n/app_localizations.dart';
 import '../models/analysis_result.dart';
 
 class BrandHeader extends StatelessWidget {
@@ -10,6 +12,8 @@ class BrandHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Row(
       children: [
         Container(
@@ -18,9 +22,9 @@ class BrandHeader extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
             border: Border.all(
-              color: const Color(0xFF8AF0D1).withOpacity(0.35),
+              color: AppColors.accentTeal.withValues(alpha: 0.35),
             ),
           ),
           clipBehavior: Clip.antiAlias,
@@ -30,24 +34,24 @@ class BrandHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'HeliDx',
-                style: TextStyle(
-                  color: Colors.white,
+                l10n.appTitle,
+                style: const TextStyle(
+                  color: AppColors.textWhite,
                   fontSize: 32,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.8,
                 ),
               ),
-              SizedBox(height: 3),
+              const SizedBox(height: 3),
               Text(
-                'Detect. Understand. Take Action.',
-                style: TextStyle(
-                  color: Color(0xFF83E4C7),
+                l10n.tagline,
+                style: const TextStyle(
+                  color: AppColors.accentSoft,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -72,15 +76,17 @@ class SamplePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       height: 275,
       decoration: BoxDecoration(
-        color: const Color(0xFF052F36),
+        color: AppColors.scaffold,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: selectedImage == null
-              ? const Color(0xFF6BA7A9)
-              : const Color(0xFF61E5BC),
+              ? AppColors.previewBorderIdle
+              : AppColors.previewBorderActive,
           width: 1.3,
         ),
       ),
@@ -107,19 +113,19 @@ class SamplePreview extends StatelessWidget {
 
           if (isAnalyzing)
             Container(
-              color: const Color(0xFF042D33).withOpacity(0.78),
+              color: AppColors.analyzingOverlay.withValues(alpha: 0.78),
               alignment: Alignment.center,
-              child: const Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(
-                    color: Color(0xFF65E8C0),
+                  const CircularProgressIndicator(
+                    color: AppColors.accentLight,
                   ),
-                  SizedBox(height: 14),
+                  const SizedBox(height: 14),
                   Text(
-                    'Comparing with reference samples',
-                    style: TextStyle(
-                      color: Colors.white,
+                    l10n.comparingSamples,
+                    style: const TextStyle(
+                      color: AppColors.textWhite,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -137,33 +143,35 @@ class _EmptyPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final l10n = AppLocalizations.of(context)!;
+
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(28),
+        padding: const EdgeInsets.all(28),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.center_focus_strong_rounded,
-              color: Color(0xFF68E8C0),
+              color: AppColors.accentLight,
               size: 52,
             ),
-            SizedBox(height: 14),
+            const SizedBox(height: 14),
             Text(
-              'Place the sample inside the frame',
+              l10n.placeSampleInFrame,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
+              style: const TextStyle(
+                color: AppColors.textWhite,
                 fontSize: 17,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            SizedBox(height: 7),
+            const SizedBox(height: 7),
             Text(
-              'Use a clear background and steady lighting for the best match.',
+              l10n.clearBackgroundHint,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Color(0xFFADC9CB),
+              style: const TextStyle(
+                color: AppColors.textMuted,
                 fontSize: 13,
                 height: 1.4,
               ),
@@ -204,9 +212,9 @@ class SecondaryButton extends StatelessWidget {
           ),
         ),
         style: OutlinedButton.styleFrom(
-          foregroundColor: const Color(0xFFDCF5F0),
+          foregroundColor: AppColors.buttonSecondaryFg,
           side: BorderSide(
-            color: const Color(0xFF93D9CC).withOpacity(0.45),
+            color: AppColors.buttonSecondaryBorder.withValues(alpha: 0.45),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -227,20 +235,21 @@ class ResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bool isPositive = result == AnalysisResult.positive;
 
     final Color accent = isPositive
-        ? const Color(0xFFFFC75F)
-        : const Color(0xFF65E8C0);
+        ? AppColors.resultPositive
+        : AppColors.resultNegative;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: accent.withOpacity(0.11),
+        color: accent.withValues(alpha: 0.11),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: accent.withOpacity(0.55),
+          color: accent.withValues(alpha: 0.55),
         ),
       ),
       child: Row(
@@ -249,7 +258,7 @@ class ResultCard extends StatelessWidget {
             width: 50,
             height: 50,
             decoration: BoxDecoration(
-              color: accent.withOpacity(0.16),
+              color: accent.withValues(alpha: 0.16),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -265,17 +274,17 @@ class ResultCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Comparison result',
-                  style: TextStyle(
-                    color: Color(0xFFBFD4D5),
+                Text(
+                  l10n.comparisonResult,
+                  style: const TextStyle(
+                    color: AppColors.textLabel,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  isPositive ? 'POSITIVE' : 'NEGATIVE',
+                  isPositive ? l10n.positive : l10n.negative,
                   style: TextStyle(
                     color: accent,
                     fontSize: 23,
@@ -288,7 +297,7 @@ class ResultCard extends StatelessWidget {
           ),
           const Icon(
             Icons.arrow_forward_ios_rounded,
-            color: Color(0xFF9BBBBC),
+            color: AppColors.textTertiary,
             size: 17,
           ),
         ],
@@ -309,9 +318,9 @@ class BackgroundDecoration extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF032E36),
-              Color(0xFF07545A),
-              Color(0xFF043239),
+              AppColors.gradientStart,
+              AppColors.gradientMid,
+              AppColors.gradientEnd,
             ],
           ),
         ),
@@ -348,10 +357,10 @@ class _GlowCircle extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFF55DDB5).withOpacity(0.08),
+        color: AppColors.glow.withValues(alpha: 0.08),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF55DDB5).withOpacity(0.10),
+            color: AppColors.glow.withValues(alpha: 0.10),
             blurRadius: 70,
             spreadRadius: 20,
           ),
@@ -368,7 +377,7 @@ class _CornerFramePainter extends CustomPainter {
     const double radius = 10;
 
     final paint = Paint()
-      ..color = const Color(0xFF76ECC8)
+      ..color = AppColors.accentMint
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
