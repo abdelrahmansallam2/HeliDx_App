@@ -1,0 +1,4 @@
+enum AnalysisResult {
+  positive,
+  negative,
+}
